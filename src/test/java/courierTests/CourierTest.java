@@ -46,29 +46,29 @@ public class CourierTest {
         addCourierId();
 
         ValidatableResponse createCourierResponse = courierClient.create(courier);
-        createCourierResponse.statusCode(409);
         addCourierId();
+        createCourierResponse.statusCode(409);
     }
 
     @Test
     public void loginIsRequariedToCreate() {
         ValidatableResponse createCourierResponse = courierClient.create(courier.setLogin(null));
-        createCourierResponse.statusCode(400);
         addCourierId();
+        createCourierResponse.statusCode(400);
     }
 
     @Test
     public void passwordIsRequariedToCreate() {
         ValidatableResponse createCourierResponse = courierClient.create(courier.setPassword(null));
-        createCourierResponse.statusCode(400);
         addCourierId();
+        createCourierResponse.statusCode(400);
     }
 
     @Test
     public void nameIsRequariedToCreate() {
         ValidatableResponse createCourierResponse = courierClient.create(courier.setFirstName(null));
-        createCourierResponse.statusCode(400);
         addCourierId();
+        createCourierResponse.statusCode(400);
     }
 
     @After
