@@ -1,19 +1,21 @@
 package org.example.order;
 
+import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
+import org.example.config.AppConfig;
 
 import static io.restassured.RestAssured.given;
 
 public class OrderClient {
 
-    public static final String BASE_URI = "https://qa-scooter.praktikum-services.ru/";
     private static final String PATH = "/api/v1/orders";
 
     public OrderClient() {
-        RestAssured.baseURI = BASE_URI;
+        RestAssured.baseURI = AppConfig.BASE_URI;
     }
 
+    @Step("Создание заказа")
     public ValidatableResponse create(Order order) {
         return given()
                 .header("Content-type", "application/json")
@@ -24,6 +26,7 @@ public class OrderClient {
                 .then();
     }
 
+    @Step("Получение списка заказов")
     public ValidatableResponse getOrderPage() {
         return given()
                 .header("Content-type", "application/json")

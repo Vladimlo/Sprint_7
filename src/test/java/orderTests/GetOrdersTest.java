@@ -1,4 +1,4 @@
-package OrderTests;
+package orderTests;
 
 import io.restassured.response.ValidatableResponse;
 import org.example.order.OrderClient;

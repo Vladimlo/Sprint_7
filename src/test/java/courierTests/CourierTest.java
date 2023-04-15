@@ -9,12 +9,23 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.core.IsEqual.equalTo;
 
 public class CourierTest {
 
     Courier courier;
     CourierClient courierClient;
+    List<String> couriersId = new ArrayList<String>();
+
+    public void addCourierId() {
+        ValidatableResponse loginResponse = courierClient.login(new CourierCreds(courier));
+        if (loginResponse.extract().statusCode() == 200) {
+            couriersId.add(loginResponse.extract().path("id").toString());
+        }
+    }
 
     @Before
     public void setUp() {
@@ -26,34 +37,44 @@ public class CourierTest {
     public void createCourier() {
         ValidatableResponse response = courierClient.create(courier);
         response.statusCode(201).and().assertThat().body("ok", equalTo(true));
-
-        response = courierClient.login(new CourierCreds(courier));
-        courierClient.delete(response.extract().path("id").toString());
+        addCourierId();
     }
 
     @Test
     public void cannotCreateIdenticalCouriers() {
-        ValidatableResponse response = courierClient.create(courier);
-        ValidatableResponse response2 = courierClient.create(courier);
-        response2.statusCode(409);
+        courierClient.create(courier);
+        addCourierId();
+
+        ValidatableResponse createCourierResponse = courierClient.create(courier);
+        createCourierResponse.statusCode(409);
+        addCourierId();
     }
 
     @Test
     public void loginIsRequariedToCreate() {
-        ValidatableResponse response = courierClient.create(courier.setLogin(null));
-        response.statusCode(400);
+        ValidatableResponse createCourierResponse = courierClient.create(courier.setLogin(null));
+        createCourierResponse.statusCode(400);
+        addCourierId();
     }
 
     @Test
     public void passwordIsRequariedToCreate() {
-        ValidatableResponse response = courierClient.create(courier.setPassword(null));
-        response.statusCode(400);
+        ValidatableResponse createCourierResponse = courierClient.create(courier.setPassword(null));
+        createCourierResponse.statusCode(400);
+        addCourierId();
     }
 
     @Test
     public void nameIsRequariedToCreate() {
-        ValidatableResponse response = courierClient.create(courier.setFirstName(null));
-        response.statusCode(400);
-        courierClient.delete(response.extract().path("id").toString());
+        ValidatableResponse createCourierResponse = courierClient.create(courier.setFirstName(null));
+        createCourierResponse.statusCode(400);
+        addCourierId();
+    }
+
+    @After
+    public void tearDown() {
+        for (String id: couriersId) {
+            courierClient.delete(id);
+        }
     }
 }

@@ -1,9 +1,8 @@
-package OrderTests;
+package orderTests;
 
 import io.restassured.response.ValidatableResponse;
 import org.example.order.Order;
 import org.example.order.OrderClient;
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -35,10 +34,5 @@ public class CreateOrderTest {
     public void createOrder() {
         ValidatableResponse response = orderClient.create(order);
         response.statusCode(201).and().body("track", notNullValue());
-    }
-
-    @After
-    public void deleteOrder() {
-
     }
 }
